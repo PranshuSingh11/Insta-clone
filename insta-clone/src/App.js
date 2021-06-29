@@ -31,7 +31,7 @@ function App() {
 
     // useEffect(()=>{
     //   localStorage.setItem('post-list',JSON.stringify(posts))
-    // })
+
     
 
   return (
