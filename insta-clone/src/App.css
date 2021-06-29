@@ -1,0 +1,72 @@
+.App {
+  text-align: center;
+}
+
+.navbar {
+  border-bottom: 1px solid grey;
+}
+
+main {
+  width: 50%;
+  margin: auto;
+  border: 2px solid grey;
+  height: auto;
+  margin-top: 20px;
+  margin-bottom: 20px;
+}
+
+.head {
+  display: flex;
+  margin: 15px;
+}
+
+.image {
+  font-size: 20px;
+}
+
+.username {
+  margin-left: 20px;
+  font-size: 20px;
+}
+
+.body {
+  height: auto;
+}
+
+img {
+  max-width: 100%;
+  max-width: 100%;
+  object-fit: cover;
+}
+
+.foot {
+  display: flex;
+  margin: 15px;
+  margin-bottom: 0px;
+}
+
+.like {
+  cursor: pointer;
+}
+.comment {
+  cursor: pointer;
+  margin-left: 20px;
+}
+
+.caption {
+  text-align: left;
+  margin: 15px;
+}
+
+@media (max-width: 1024px) {
+  main {
+    width: 80%;
+  }
+}
+
+@media (max-width: 767px) {
+  main {
+    width: 100%;
+  }
+}
+
