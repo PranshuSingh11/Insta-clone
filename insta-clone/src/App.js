@@ -47,7 +47,6 @@ function App() {
         <ProtectedRoute path='/logout' exact component={Logout}></ProtectedRoute> 
         <Route path='/unauthorized' exact ><Unauthorized></Unauthorized></Route>
         <Route path='*' >404  Not found</Route>
-        <Route path='*' >404 Not found</Route>
       </Switch>
     </div>
     </Router>
