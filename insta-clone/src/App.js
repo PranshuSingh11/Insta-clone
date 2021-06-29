@@ -46,7 +46,7 @@ function App() {
         <ProtectedRoute path='/profile' exact component={Profile}></ProtectedRoute>
         <ProtectedRoute path='/logout' exact component={Logout}></ProtectedRoute> 
         <Route path='/unauthorized' exact ><Unauthorized></Unauthorized></Route>
-        <Route path='*' >404</Route>
+        <Route path='*' > found</Route>
       </Switch>
     </div>
     </Router>
