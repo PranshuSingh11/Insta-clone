@@ -25,8 +25,6 @@ function Post() {
     // var [posts, setPosts] = useState([ { username: "Pranshu_Singh", image: `${image}`, caption: "Hello" },
     // { username: "Pravin_Singh", image: `${image}`, caption: "Ciao" },]);
 useEffect(()=>{
-
-
   axios.get("http://localhost:3001/posts",{
     headers:{
       'auth-token':JWTtoken
@@ -53,9 +51,6 @@ useEffect(()=>{
           console.log(res)
           setUser(res.data)
         })
-
-
-
 },[])
 
 
@@ -197,7 +192,7 @@ else
                 }
                 </>:
                  <div>
-                   No
+                   Noo
                </div>
                 }
                 <button onClick={loadmore}>Load more comments</button>
