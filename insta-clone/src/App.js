@@ -14,14 +14,19 @@ import {
 import Login from './components/Login';
 import Register from './components/Register';
 import Profile from './components/Profile'
-import Logout from './components/Logout'
 import ProtectedRoute from "./components/ProtectedRoute";
 import Unauthorized from './components/Unauthorized';
+import UserProfile from './components/UserProfile';
+
+
 
 
 
 
 function App() {   
+
+  
+
     // useEffect(()=>{
     //   let data = localStorage.getItem('post-list')
     //   if(data){
@@ -35,21 +40,25 @@ function App() {
     
 
   return (
+
     <Router>
     <div className="App">
       <Switch>
-        <Route path='/' exact ><Login></Login></Route>
+        <Route path='/' exact ></Route>
         <Route path='/register' exact ><Register></Register></Route>
         <Route path='/login' exact ><Login></Login></Route>
         <ProtectedRoute path='/create-post' exact component={CreatePost}></ProtectedRoute>
         <ProtectedRoute path='/post' exact component={Post}></ProtectedRoute>
         <ProtectedRoute path='/profile' exact component={Profile}></ProtectedRoute>
-        <ProtectedRoute path='/logout' exact component={Logout}></ProtectedRoute> 
+        <ProtectedRoute path='/profile/:userId' component={UserProfile}></ProtectedRoute>
+     
         <Route path='/unauthorized' exact ><Unauthorized></Unauthorized></Route>
         <Route path='*' >404 page not found</Route>
+      
       </Switch>
     </div>
     </Router>
+
   );
 }
 

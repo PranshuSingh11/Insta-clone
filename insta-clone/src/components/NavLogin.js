@@ -1,13 +1,21 @@
 import React from "react";
 import { Nav, Navbar, NavDropdown } from "react-bootstrap";
-import { BrowserRouter as Router, Switch, Route, Link } from "react-router-dom";
+import {useHistory,Link} from 'react-router-dom'
 import logo from '../assets/images/Logo.png'
 
-function NavBar() {
+function NavLogin() {
+  let history = useHistory()
+  const logout = () =>{
+    localStorage.removeItem('JWTtoken')
+    localStorage.removeItem('UserEmail')
+    localStorage.removeItem('UserName')
+    history.push('/login')
+}
+
   return (
     <div>
       <Navbar bg="light">
-        <img id="logo" src={logo}></img>
+      <img id="logo" src={logo}></img>
         <Nav className="mr-auto">
           <Link to="/">
             <Nav.Link href="#home">Home</Nav.Link>
@@ -25,17 +33,14 @@ function NavBar() {
             <Link to="/profile">
               <NavDropdown.Item href="#action/3.3">Account</NavDropdown.Item>
             </Link>
+            <Link>
+              <NavDropdown.Item href="#action/3.3" onClick={logout}>Logout</NavDropdown.Item>
+            </Link>
           </NavDropdown>
-          {/* <Link to="/login">
-            <Nav.Link href="#home">Sign in</Nav.Link>
-          </Link>
-          <Link to="/register">
-            <Nav.Link href="#home">Sign up</Nav.Link>
-          </Link> */}
         </Nav>
       </Navbar>
     </div>
   );
 }
 
-export default NavBar;
+export default NavLogin;

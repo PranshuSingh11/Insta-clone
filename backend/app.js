@@ -4,6 +4,7 @@ const mongoose = require("mongoose");
 require("dotenv/config");
 const bodyParser = require('body-parser')
 const cors = require('cors')
+require('express-async-errors')
 
 //import routes
 const postsRoute = require('./routes/posts')
@@ -23,9 +24,18 @@ app.get("/", (req, res) => {
 });
 
 //connect to DB
-mongoose.connect(process.env.DB_CONNECTION, { useNewUrlParser: true }, () =>
-  console.log("Connected to DB  ")
-);
+mongoose
+.connect(process.env.DB_CONNECTION, { useNewUrlParser: true,useCreateIndex: true, useUnifiedTopology: true, useFindAndModify: false })
+
+.then(x => {
+  console.log(
+    `Connected to Mongo! Database name: "${x.connections[0].name}"`
+  );
+})
+.catch(err => {
+  console.error("Error connecting to mongo", err);
+});
+
 
 
 
