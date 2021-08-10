@@ -4,9 +4,6 @@ const User = require('./User')
 
 
 const PostSchema = mongoose.Schema({
-    username:{
-        type:String,
-    },
     caption:{
         type:String,
     },

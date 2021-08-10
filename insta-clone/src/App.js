@@ -1,9 +1,6 @@
 import './App.css';
-import {useState,useEffect} from 'react'
-import NavBar from './components/NavBar';
 import Post from './components/Post'
 import 'bootstrap/dist/css/bootstrap.min.css';
-import image from "../src/assets/images/image.jfif";
 import CreatePost from './components/CreatePost';
 import {
   BrowserRouter as Router,
@@ -16,43 +13,34 @@ import Profile from './components/Profile'
 import ProtectedRoute from "./components/ProtectedRoute";
 import Unauthorized from './components/Unauthorized';
 import UserProfile from './components/UserProfile';
+import FollowersModal from './components/FollowersModal';
+import FollowingModal from './components/FollowingModal';
+import FollowersModal2 from './components/FollowersModal2';
+import FollowingModal2 from './components/FollowingModal2';
+import PageNotFound from './components/PageNotFound';
 
-
-
-
-
-
-function App() {   
-
-  
-
-    // useEffect(()=>{
-    //   let data = localStorage.getItem('post-list')
-    //   if(data){
-    //     setPosts(JSON.parse(data))
-    //   }
-    // },[])
-
-    // useEffect(()=>{
-    //   localStorage.setItem('post-list',JSON.stringify(posts))
-
-    
+function App() {    
 
   return (
 
     <Router>
     <div className="App">
       <Switch>
-        <Route path='/' exact ></Route>
+        <Route path='/' exact ><Login></Login></Route>
         <Route path='/register' exact ><Register></Register></Route>
         <Route path='/login' exact ><Login></Login></Route>
+        
         <ProtectedRoute path='/create-post' exact component={CreatePost}></ProtectedRoute>
         <ProtectedRoute path='/post' exact component={Post}></ProtectedRoute>
         <ProtectedRoute path='/profile' exact component={Profile}></ProtectedRoute>
         <ProtectedRoute path='/profile/:userId' component={UserProfile}></ProtectedRoute>
+        <ProtectedRoute path='/followers' exact component={FollowersModal}></ProtectedRoute>
+        <ProtectedRoute path='/following' exact component={FollowingModal}></ProtectedRoute>
+        <ProtectedRoute path='/userfollowers' exact component={FollowersModal2}></ProtectedRoute>
+        <ProtectedRoute path='/userfollowing' exact component={FollowingModal2}></ProtectedRoute>
      
         <Route path='/unauthorized' exact ><Unauthorized></Unauthorized></Route>
-        <Route path='*' >404 page not found</Route>
+        <Route path='*' ><PageNotFound></PageNotFound></Route>
       
       </Switch>
     </div>

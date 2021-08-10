@@ -1,12 +1,15 @@
 import axios from 'axios'
 import React,{useEffect,useState,useContext} from 'react'
 import NavBar from './NavBar';
-import { useHistory } from 'react-router';
+import { useHistory,Link } from 'react-router-dom';
 import NavLogin from './NavLogin';
 import 'bootstrap/dist/css/bootstrap.css'
 import profilepic from '../assets/images/image.jfif'
 import { useParams } from 'react-router-dom';
 import { Spinner } from 'reactstrap';
+import FollowersModal from './FollowersModal';
+import FollowingModal from './FollowingModal';
+import userImg from '../assets/images/userImg.png'
 
 function UserProfile() {
   var [userposts,setUserposts] = useState([])
@@ -14,6 +17,8 @@ function UserProfile() {
   var [userprofile,setUserprofile] = useState([])
   var [following,setFollowing] = useState([])
   var [followers,setFollowers] = useState([])
+  var [ufollowing,setUFollowing] = useState([])
+  var [ufollowers,setUFollowers] = useState([])
   var [user,setUser] = useState({})
   var [loaded,setLoaded] = useState(false)
 
@@ -68,14 +73,18 @@ function UserProfile() {
           console.log(res)
           setUserprofile(res.data.posts)
           setU(res.data.user)
+          setUFollowers(res.data.user.followers)
+          setUFollowing(res.data.user.following)
           setLoaded(true)
         })
+
         
-    }, [followers])
+        
+    },[followers,following])
 
-    const follow = (id) => {
+    const follow = (id,name) => {
       console.log(id)
-      axios.put("http://localhost:3001/user/follow",{"followId":id},{
+      axios.put("http://localhost:3001/user/follow",{"followId":id,"name":name},{
         headers:{
           'auth-token':JWTtoken
         }
@@ -88,9 +97,9 @@ function UserProfile() {
     }
 
 
-    const unfollow = (id) => {
+    const unfollow = (id,name) => {
       console.log(id)
-      axios.put("http://localhost:3001/user/unfollow",{"followId":id},{
+      axios.put("http://localhost:3001/user/unfollow",{"followId":id,"name":name},{
         headers:{
           'auth-token':JWTtoken
         }
@@ -102,8 +111,31 @@ function UserProfile() {
       })
     }
 
+    if(u.followers){
+      var l = u.followers.length
+    }
+    else{
+      var l = 0
+    }
+    if(l==0){
+      var followbutton =  <button class="btn btn-primary" onClick={()=>follow(u._id,u.name)}>Follow</button>
+    }
+    else{
+      for(var i=0;i<l;i++){
+          if(u.followers[i].followedBy==user._id)
+            var followbutton =  <button class="btn btn-outline-primary" onClick={()=>unfollow(u._id,u.name)}>unFollow</button>
+          else
+            var followbutton =  <button class="btn btn-primary" onClick={()=>follow(u._id,u.name)}>Follow</button>
+      }
+    }
+     
 
-    console.log(user._id)
+
+
+
+
+
+
     console.log(u.followers)
 
     var Button
@@ -115,45 +147,70 @@ function UserProfile() {
 
     return (
       <>
-      {loaded? 
+      {(loaded) ? 
       <div>
       {Button}
       <div id="profile-cont" className="container">
        <div className="row" >
           <div className="col-4 my-auto" style={{display:"flex",justifyContent:"center",alignItems:"center"}}>
-            <img class="profile-pic" src={profilepic}></img>
+            {
+              (u.profileImg)?
+              <img className="profile-pic" src={u.profileImg}></img>
+              :
+              <img src={userImg} className="profile-pic"></img>
+            }
+            
           </div>
           <div className="col-8 my-auto" style={{marginTop:"center",marginBottom:"center"}}>
               <h5>{u.name}</h5>
-              <div>
+              <div id="user-stats">
                 <ul style={{listStyle:"none",display:"flex",justifyContent:"space-around",alignItems:"center"}}>
-                  <li>
-                    <b>{userprofile.length}</b> posts
+                  <li style={{display:"flex"}}>
+                    <b>{(userprofile)?userprofile.length:<>0</>}</b> <button style={{padding:"5px",marginLeft:"10px",marginTop:"-3px"}} class="btn btn-outline-info">Posts</button>
                   </li>
-                  <li>
-                    <b>{u.followers.length}</b> followers
+                  <li style={{display:"flex"}}>
+                    <b>{(u.followers)?u.followers.length:<>0</>}</b> <FollowersModal ufollowers={ufollowers}/>
                   </li>
-                  <li>
-                    <b>{u.following.length}</b> following
+                  <li style={{display:"flex"}}>
+                    <b>{(u.following)?u.following.length:<>0</>}</b> <FollowingModal ufollowing={ufollowing}/>
                   </li>
                 </ul>
               </div>
-              {/* <div><button onClick={()=>follow(u._id)}>Follow</button></div> */}
+{/* 
               {
                 ((u.followers.includes(user._id)))?
                 <div>
-                 <button onClick={()=>unfollow(u._id)}>unFollow</button>
+                 <button class="btn btn-outline-primary" onClick={()=>unfollow(u._id,u.name)}>unFollow</button>
                 </div>:
                 <div>
-                 <button onClick={()=>follow(u._id)}>Follow</button>
+                 <button class="btn btn-primary" onClick={()=>follow(u._id,u.name)}>Follow</button>
                 </div>
-              }
+              } */}
+              {followbutton}
+  
+
           </div>
        </div>
       </div>
 
        
    <hr></hr>
+
+   <div id="res-stats">
+          <ul style={{listStyle:"none",display:"flex",justifyContent:"space-around",alignItems:"center",padding:"0px"}}>
+                   <li style={{display:"flex"}}>
+                     <b>{(userposts)?userposts.length:<>0</>}</b> <button style={{padding:"5px",marginLeft:"10px",marginTop:"-3px"}} class="btn btn-outline-info">Posts</button>
+                   </li>
+                   <li style={{display:"flex"}}>
+                     <b>{(user.followers)?user.followers.length:<>0</>}</b> <FollowersModal ufollowers={ufollowers}/>
+                   </li>
+                   <li style={{display:"flex"}}>
+                     <b>{(user.following)?user.following.length:<>0</>}</b> <FollowingModal ufollowing={ufollowing}/>
+                   </li>
+                 </ul>
+                 <hr></hr>
+        </div>
+
     <div className="grid-container">
 
 
@@ -165,8 +222,8 @@ function UserProfile() {
                   </img>
                   <div className="post-stats">
                   
-                      <p style={{padding:"5px"}}><i class="fas fa-heart" aria-hidden="true"></i> {post.likes.length} </p>
-                      <p><i class="fas fa-comment" aria-hidden="true"></i> 0 </p>
+                      <p className="post-stats-item"><i class="fas fa-heart" aria-hidden="true"></i> {post.likes.length} </p>
+                      <p className="post-stats-item"><i class="fas fa-comment" aria-hidden="true"></i> {post.comments.length} </p>
 
                   </div>
                   </div>

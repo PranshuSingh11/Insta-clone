@@ -61,11 +61,19 @@ main {
 #profile-cont{
   height: 25vh;
   margin: auto;
-  width: 50%;
+  width: 60%;
   padding: 12px;
 }
 
 .profile-pic{
+  border: 1px solid gray;
+  border-radius: 50%;
+  height: 150px;
+  width: 150px;
+  object-fit: contain;
+}
+
+.profile-pic-default{
   border-radius: 50%;
   height: 150px;
   width: 150px;
@@ -128,7 +136,72 @@ main {
   width: 95%;
 }
 
+.addcomment{
+  margin:15px;
+  text-align:left
+}
 
+.loginImg{
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  margin: auto;
+  height: auto;
+}
+ 
+.registerImg{
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  width: 50%;
+  margin: auto;
+  height: auto;
+}
+
+#stats{
+  margin-top: center;
+  margin-bottom: center;
+}
+
+#res-stats{
+  display: none;
+}
+
+.post-stats-item{
+  padding: 25px;
+}
+
+#notfoundImg{
+  width: 100%;
+  height: auto;
+  position: absolute;
+  left: 0;
+  right: 0;
+  top: 0;
+  bottom: 0;
+  margin: auto;
+}
+
+#notfoundText{
+  margin: 0;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  -ms-transform: translate(-50%, -50%);
+  transform: translate(-50%, -50%);
+}
+
+.popoverbody{
+  height: 150px;
+  width: 200px;
+  overflow-y: scroll;
+  text-align: center;
+}
 
 @media (max-width: 1024px) {
   main {
@@ -141,6 +214,16 @@ main {
   .profile-pic{
     height:120px ;
     width: 120px;
+  }
+}
+
+
+@media (max-width: 1000px) {
+  .loginImg{
+    height: 170px;
+  }
+  .registerImg{
+    height: 100px;
   }
 }
 
@@ -159,6 +242,39 @@ main {
   .posts{
     height: 100px;
     padding: 1px;
+  }
+  .loginImg{
+    height: 100px;
+  }
+  .registerImg{
+    height: 80px;
+  }
+  #stats{
+    display: none;
+  }
+  #res-stats{
+    display: block;
+  }
+  #user-stats{
+    display: none;
+  }
+  .post-stats-item{
+    padding: 5px;
+  }
+  #notfoundImg{
+   height: 200px;
+   width: 150px;
+  }
+
+}
+
+@media (max-height: 670px) {
+
+  .loginImg{
+    display: none;
+  }
+  .registerImg{
+    display: none;
   }
 }
 

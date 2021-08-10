@@ -7,7 +7,7 @@ function NavBar() {
   return (
     <div>
       <Navbar bg="light">
-        <img id="logo" src={logo}></img>
+        <b>PHOTOGRAM</b>
         <Nav className="mr-auto">
           <Link to="/">
             <Nav.Link href="#home">Home</Nav.Link>

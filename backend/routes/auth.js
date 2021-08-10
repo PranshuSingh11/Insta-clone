@@ -6,6 +6,18 @@ const bcrypt = require("bcryptjs");
 const jwt = require('jsonwebtoken')
 const verify = require('./verifyToken');
 const Post = require("../models/Post");
+const multer = require('multer');
+
+const storage = multer.diskStorage({
+  destination:function(req,file,cb){
+    cb(null, './uploads');
+  },
+  filename: function(req,file,cb){
+    cb(null, Date.now() + file.originalname)
+  }
+})
+
+const upload = multer({storage:storage})
 
 
 router.get("/",verify,async (req,res)=>{
@@ -14,6 +26,19 @@ router.get("/",verify,async (req,res)=>{
   try {
     const userinfo = await  User.findOne({_id:req.user})
     res.json(userinfo)
+  } catch (error) {
+    res.json({message:error})
+  }
+})
+
+
+
+router.get("/allusers",verify,async (req,res)=>{
+
+
+  try {
+    const usersinfo = await  User.find()
+    res.json(usersinfo)
   } catch (error) {
     res.json({message:error})
   }
@@ -46,6 +71,9 @@ router.post("/register" ,async (req, res) => {
 
   const emailExists = await User.findOne({ email: req.body.email });
   if (emailExists) return res.status(400).send("Email already exists");
+
+  const nameExists = await User.findOne({ name: req.body.name });
+  if (nameExists) return res.status(400).send("Username already exists");
 
   const salt = await bcrypt.genSalt()
   const hashedPassword = await bcrypt.hash(req.body.password,salt)
@@ -80,8 +108,8 @@ router.post("/login", async (req, res) => {
   if (!validPass) return res.status(400).send("Invalid Password");
 
   //Create and assign a token
-  const  token = jwt.sign({_id:user._id},process.env.TOKEN_SECRET)
   const {_id,name,following} = user
+  const  token = jwt.sign({_id:user._id,name:user.name},process.env.TOKEN_SECRET)
   res.header('auth-token',token).send({token,user:_id,name,following})
 
   res.send("Logged in");
@@ -90,14 +118,14 @@ router.post("/login", async (req, res) => {
 
 router.put('/follow',verify,(req,res)=>{
   User.findByIdAndUpdate(req.body.followId,{
-    $addToSet:{followers:req.user._id}
+    $addToSet:{followers:{followedBy:req.user._id,name:req.user.name}},
   },{
     new:true
   },(err,result)=>{
     if(err)
       return res.status(400).json({error:err})
     User.findByIdAndUpdate(req.user._id,{
-      $addToSet:{following:req.body.followId}
+      $addToSet:{following:{followingBy:req.body.followId,name:req.body.name}},
     },{
       new:true
     }).then(result=>{
@@ -105,20 +133,20 @@ router.put('/follow',verify,(req,res)=>{
     }).catch(err=>{
       return res.status(400).json({error:err})
     })
-  })
+  }).populate("followers.followedBy","_id name") .populate("following.followingBy","_id name")
 })
 
 
 router.put('/unfollow',verify,(req,res)=>{
   User.findByIdAndUpdate(req.body.followId,{
-    $pull:{followers:req.user._id}
+    $pull:{followers:{followedBy:req.user._id,name:req.user.name}},
   },{
     new:true
   },(err,result)=>{
     if(err)
       return res.status(400).json({error:err})
     User.findByIdAndUpdate(req.user._id,{
-      $pull:{following:req.body.followId}
+      $pull:{following:{followingBy:req.body.followId,name:req.body.name}},
     },{
       new:true
     }).then(result=>{
@@ -126,6 +154,25 @@ router.put('/unfollow',verify,(req,res)=>{
     }).catch(err=>{
       return res.status(400).json({error:err})
     })
+  }).populate("followers.followedBy","_id name") .populate("following.followingBy","_id name")
+})
+
+router.post('/profileImg',upload.single('image'),verify,(req,res)=>{
+  console.log(req.file)
+  const url = req.protocol + '://' + req.get('host')
+  const profileImage = url + '/uploads/' + req.file.filename
+
+  User.findByIdAndUpdate(req.user._id,{
+    profileImg:profileImage
+  },{
+    new:true
+  })
+  .exec((err,result)=>{
+    if(err)
+      return res.status(422).json({error:err})  
+    else{
+       res.json(result)
+    }
   })
 })
 

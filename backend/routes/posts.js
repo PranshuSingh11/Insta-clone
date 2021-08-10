@@ -6,7 +6,6 @@ const path = require('path')
 const verify = require('./verifyToken')
 const User = require('../models/User')
 const mongoose = require('mongoose')
-var {ObjectId} = mongoose.Types.ObjectId
 
 const storage = multer.diskStorage({
   destination:function(req,file,cb){
@@ -39,6 +38,16 @@ router.get("/myposts",verify, async (req, res) => {
   }
 });
 
+router.put("/singlepost", async (req, res) => {
+
+  try {
+    const post = await Post.findOne({_id:req.body.pId})
+    res.json(post)
+  } catch (error) {
+    res.json({message:error})
+  }
+});
+
 
 
 
@@ -46,7 +55,6 @@ router.post("/",upload.single('image'),verify ,(req, res) => {
   console.log(req.file)
   const url = req.protocol + '://' + req.get('host')
   const post = new Post({
-    username: req.body.username,
     caption: req.body.caption,
     image:url + '/uploads/' + req.file.filename,
     postedBy:req.user
@@ -115,6 +123,8 @@ router.put('/unlike',verify, (req,res)=>{
      }
    })
  })
+
+
 
 
 

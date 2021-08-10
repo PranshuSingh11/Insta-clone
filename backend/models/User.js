@@ -5,7 +5,8 @@ const userSchema = new mongoose.Schema({
     name:{
         type:String,
         required:true,
-        min:6
+        min:6,
+        unique:true
     },
     email:{
         type:String,
@@ -19,14 +20,23 @@ const userSchema = new mongoose.Schema({
         max:1024,
         min:6
     },
-    followers:[{
-        type:ObjectId,
-        ref:'User'
-    }],
-    following:[{
-        type:ObjectId,
-        ref:'User'
-    }],
+    profileImg:{
+        type:String
+    },
+    followers:{
+        name:String,
+        followedBy:{
+            type:ObjectId,
+            ref:'User'
+        }
+    },
+    following:{
+        name:String,
+        followingBy:{
+            type:ObjectId,
+            ref:'User'
+        }
+    },
     date:{
         type:Date,
         default:Date.now

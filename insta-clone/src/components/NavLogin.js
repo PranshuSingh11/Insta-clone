@@ -1,7 +1,9 @@
-import React from "react";
+import axios from "axios";
+import React,{useState,useEffect} from "react";
 import { Nav, Navbar, NavDropdown } from "react-bootstrap";
-import {useHistory,Link} from 'react-router-dom'
+import {useHistory,Link, NavLink} from 'react-router-dom'
 import logo from '../assets/images/Logo.png'
+import { Button, Popover, PopoverHeader, PopoverBody,UncontrolledPopover } from 'reactstrap';
 
 function NavLogin() {
   let history = useHistory()
@@ -12,14 +14,54 @@ function NavLogin() {
     history.push('/login')
 }
 
+const [popoverOpen, setPopoverOpen] = useState(false);
+const [users,setUsers] = useState([])
+const [user,setUser] = useState({})
+const [search,setSearch] = useState('')
+const [searchres,setSearchres] = useState('')
+
+const toggle = () => setPopoverOpen(!popoverOpen);
+
+  const JWTtoken = localStorage.getItem('JWTtoken')
+  useEffect(() => {
+    axios.get('http://localhost:3001/user/allusers',{
+      headers:{
+        'auth-token':JWTtoken
+      }
+    })
+    .then(res=>{
+      console.log(res)
+      setUsers(res.data)
+    })
+
+    axios.get("http://localhost:3001/user",{
+      headers:{
+          'auth-token':JWTtoken
+        }
+      })
+    .then(res=>{
+      console.log(res)
+      setUser(res.data)
+    })
+
+
+  }, [])
+
+
+const getSearch = (e) => {
+  setSearch(e.target.value)
+  const filtered = users.filter(user=>{
+    return user.name.toLowerCase().includes(search.toLowerCase())
+  })
+  setSearchres(filtered)
+}
+
+
   return (
     <div>
       <Navbar bg="light">
-      <img id="logo" src={logo}></img>
+        <span style={{fontSize:"20px",fontFamily:"'Anton', sans-serif"}}>PHOTOGRAM</span>
         <Nav className="mr-auto">
-          <Link to="/">
-            <Nav.Link href="#home">Home</Nav.Link>
-          </Link>
           <NavDropdown title="Profile" id="basic-nav-dropdown">
             <Link to="/create-post">
               <NavDropdown.Item href="#action/3.1">
@@ -27,16 +69,36 @@ function NavLogin() {
               </NavDropdown.Item>
             </Link>
             <Link to="/post">
-              <NavDropdown.Item href="#action/3.2">View Posts</NavDropdown.Item>
+              <NavDropdown.Item href="#action/3.2">Posts Feed</NavDropdown.Item>
+            </Link>
+            <Link to="/profile">
+              <NavDropdown.Item href="#action/3.3"> Your Profile</NavDropdown.Item>
             </Link>
             <NavDropdown.Divider />
-            <Link to="/profile">
-              <NavDropdown.Item href="#action/3.3">Account</NavDropdown.Item>
-            </Link>
             <Link>
               <NavDropdown.Item href="#action/3.3" onClick={logout}>Logout</NavDropdown.Item>
             </Link>
           </NavDropdown>
+        
+          <input value={search} autocomplete="off" placeholder="Search" style={{textAlign:"center",borderRadius:"7px",outline:"none",height:"30px",marginTop:"5px",border:"2px solid lightgrey"}} id="PopoverFocus" type="text" onChange={getSearch}></input>
+      <UncontrolledPopover className="popover" trigger="focus" placement="bottom" target="PopoverFocus">
+        <PopoverHeader>Search People</PopoverHeader>
+        <PopoverBody className="popoverbody">
+          
+            {
+              (searchres)?
+              <>
+              {
+                searchres.map(res=>(
+                  <> <Link to={(res._id!==user._id)?"/profile/"+res._id:"/profile"}><span  style={{textDecoration:"none",color:'black',textAlign:"center"}}>{res.name}</span></Link><hr></hr> </>
+                ))
+              }
+              </>:
+              <></>
+            }
+        </PopoverBody>
+      </UncontrolledPopover>
+        
         </Nav>
       </Navbar>
     </div>

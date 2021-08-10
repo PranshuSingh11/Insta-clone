@@ -5,25 +5,22 @@ import { useHistory } from "react-router";
 import NavLogin from "./NavLogin";
 import { Link } from "react-router-dom";
 import { Spinner } from 'reactstrap';
+import ModalExample from "./CommentModal";
 
 
 
-function Post() {
+function Post(props) {
+
   var [posts, setPosts] = useState([]);
   var [user,setUser] = useState({})
   var [loaded,setLoaded] = useState(false)
-  var [comment,setComment] = useState([])
+  var [text,setText] = useState("")
   var [likes,setLikes] = useState([])
-  var [number,setNumber] = useState(1)
 
 
   let history = useHistory()
   const JWTtoken = localStorage.getItem('JWTtoken')
 
-
-
-    // var [posts, setPosts] = useState([ { username: "Pranshu_Singh", image: `${image}`, caption: "Hello" },
-    // { username: "Pravin_Singh", image: `${image}`, caption: "Ciao" },]);
 useEffect(()=>{
   axios.get("http://localhost:3001/posts",{
     headers:{
@@ -32,10 +29,10 @@ useEffect(()=>{
   })
   .then(res=>{
   if(res.status===200){
-    console.log(res.data)
+    console.log(res)
     setPosts(res.data)
+    setLoaded(true)
   }
-  setLoaded(true)
   })
   .catch(err=>{
     console.log({message:err})
@@ -99,6 +96,8 @@ const unlikeCounter  = (id)  => {
      setLikes([...res.data.likes])
      console.log(res.data.likes)
    })
+
+
 }
 
 const submitHandler = (text,postId) => {
@@ -124,9 +123,7 @@ const submitHandler = (text,postId) => {
   })
 }
 
-const loadmore = ()=> {
-  setNumber(number+3)
-}
+
 
 
 
@@ -139,9 +136,12 @@ else
 
   return (
     <>
+         {Button}
+
+      
     {loaded?
     <div>
-      {Button}
+ 
             {posts.map((post) => (
               <>
                 <main style={{border:"2px solid black"}}>
@@ -169,53 +169,41 @@ else
                       </div>
                       )
                     }
-                    {/* <button id="like" style={{border:"none",background:"white"}} onClick={()=>{likeCounter(post._id)}}><i className="far fa-heart fa-lg"></i></button> {post.likes.length}
-                    */}
                   </div>
                   <div className="comment">
-                    <i className="far fa-comment fa-lg"></i>
+                    <button onClick={()=>document.getElementById("commentinput").focus()} style={{border:"none",background:"white"}}><i className="far fa-comment fa-lg"></i></button>
                   </div>
                 </div>
                 <div className="caption">
-                  {post.username}&nbsp;
+                  <b>{post.postedBy.name}</b>&nbsp;
                   {post.caption}
                 </div>
-                {
-                (number<=1)?
-                <>
-                {
-                  post.comments.slice(0,number).map(comment=>(
-                    <>
-                    <p>{comment.postedBy.name} <i>{comment.text}</i></p> 
-                    </>
-                  ))
-                }
-                </>:
-                 <div>
-                   Noo
-               </div>
-                }
-                <button onClick={loadmore}>Load more comments</button>
+                
+                <div style={{textAlign:"left",marginLeft:"15px"}}>
+                <ModalExample post={post}/>
+                </div>
+   
                 <div className="addcomment">
-                  <form style={{width:"100%"}} onSubmit={(e)=>{
+                  <form style={{display:"flex",width:"100%"}} onSubmit={(e)=>{
                     e.preventDefault()
                     console.log(e.target[0].value)
                     submitHandler(e.target[0].value,post._id)
                     }}>
                    <input id="commentinput" type="text"></input>
-                   <button type="submit">Add</button>
+                   <button class="btn btn-info" type="submit">Add</button>
                   </form>
                 </div>
                 </main>
               </>
             
 
-            ))}
-
+  ))}
          
-    </div> :<div style={{display:"flex",justifyContent:"center",alignItems:"center",height:"100vh"}}> <h2><Spinner color="danger" /></h2></div>}
-    
+    </div>:<div style={{display:"flex",justifyContent:"center",alignItems:"center",height:"100vh"}}> <h2><Spinner color="danger" /></h2></div> }
+
     </>
+    
+ 
   );
 }
 

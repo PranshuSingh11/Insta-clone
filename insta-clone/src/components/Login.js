@@ -4,7 +4,7 @@ import {  Form,Label,Input,FormGroup } from "reactstrap";
 import { useHistory,Link } from "react-router-dom";
 import NavBar from './NavBar';
 import 'bootstrap/dist/css/bootstrap.css'
-import loginImg from '../assets/images/login3.svg'
+import loginImg from '../assets/images/login13.svg'
 
 
 function Login() {
@@ -39,7 +39,7 @@ function Login() {
         })
         .then(response=>{
           console.log(response)
-          history.push('/post')
+          history.push('/profile')
         })
         .catch(err=>{
           console.log({message:err})
@@ -58,15 +58,15 @@ function Login() {
 
   return (
     <div>
-    <NavBar></NavBar>
+  
    
-    <div className="row" style={{height:"93vh",backgroundColor:"black"}}>
-      <div className="col-lg-6">
-      <img style={{position:"absolute",left:"0",right:"0",top:"0",bottom:"0",width:"50%",margin:"auto",height:"auto"}} src={loginImg}></img>
+    <div className="row" style={{height:"100vh",backgroundColor:"black"}}>
+      <div className="col-md-6">
+      <img className="loginImg" src={loginImg}></img>
       </div>
-      <div id="form" className="col-lg-6" >
+      <div id="form" className="col-md-6" >
       <Form onSubmit={submitHandler}>
-        <Label style={{fontSize:"50px",fontFamily:"'Anton', sans-serif"}}>INSTAGRAM</Label><br></br><br></br>
+        <Label style={{fontSize:"50px",fontFamily:"'Anton', sans-serif"}}>PHOTOGRAM</Label><br></br><br></br>
         <FormGroup>
           <Label for="exampleEmail">Email</Label>
           <Input
@@ -91,7 +91,7 @@ function Login() {
             style={{width:"50%",margin:"auto"}}
           />
         </FormGroup>
-        <input type="submit"></input><br></br><br></br>
+        <button className="btn btn-outline-danger" type="submit">Login</button><br></br><br></br>
 
         <p style={{color:"white"}}>Don't have an account ? <Link style={{color:"#F50057"}} to='/register'>Sign up</Link> now !!!</p>
       </Form><br></br>
